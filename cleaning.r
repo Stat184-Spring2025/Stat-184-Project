@@ -1,6 +1,6 @@
 library(dplyr)
 library(tidyr)
-data <- read.csv("datasets/amazon.csv")
+data <- read.csv("amazon.csv")
  
  
 View(data)
