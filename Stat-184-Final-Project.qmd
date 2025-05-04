@@ -18,30 +18,167 @@ format:
 execute: 
   echo: false
   warning: false
-
 ---
-## Introduction
+
+# Amazon Sales India Dataset
+
+The dataset used for this project is a comprehensive list of Amazon product sales in India.
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(knitr)
+data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
+
+df_unique <- data %>%
+  distinct(product_id, .keep_all = TRUE)
 
 
-## Data Provenance
+conversion_rate <- 0.012  # ₹1 = $0.012
+
+df_usd <- df_unique %>%
+  mutate(
+    discounted_price_USD = as.numeric(gsub(",","",gsub("₹", "", discounted_price))),
+    actual_price_USD = as.numeric(gsub(",","",gsub("₹", "", actual_price)))
+    
+  )
 
 
-## FAIR Principles 
+df_tidy <- df_usd %>%
+  mutate(
+    rating_count = as.numeric(gsub(",", "", rating_count)),
+  ) %>%
+  select(user_id, product_name, category, discounted_price_USD, actual_price_USD, rating, rating_count) %>%
+  separate_rows(user_id, sep = ",") %>%
+  arrange(user_id)
+
+df_summary <- df_tidy %>%
+  filter(!is.na(rating) & rating != "") %>%
+  mutate(
+    rating = as.numeric(rating),
+    main_category = sapply(strsplit(category, '\\|'), `[`, 1)
+  ) %>%
+  group_by(main_category) %>%
+  summarise(
+    avg_rating = round(mean(rating, na.rm = TRUE), 2),
+    total_reviews = n()
+  ) %>%
+  arrange(desc(total_reviews))
+
+# Display as polished table
+kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) +
+  geom_bar(stat = "identity", color = "black", width = 0.7, show.legend = FALSE) +
+  scale_fill_brewer(palette = "Set3") +
+  labs(
+    title = "Average Rating by Main Category",
+    subtitle = "Amazon India Sales Dataset",
+    x = "Main Category",
+    y = "Average Rating"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major.y = element_line(color = "black")
+  )
+```
+
+## Report
+
+With the following data visualizations provided above via graph and table, provides a comprehensive overview of customer satisfaction across various products. While the bar chart displays average rating for each main category, allowing for easy visual comparison, the table supplements this with total review counts, which gives context to the statistical reliability of those ratings.
+
+**Key Observations:**
+
+-   While *Office Products (4.31)* and *Toy & Games (4.30)* lead in the average rating in customer satisfaction, these categories have relatively low review counts (248 and 8). This may cause future customers to be hesitant as they may be unsure about the reliability of the reviews.
+
+-   Categories receiving high volumes in rating count, such as *Electronics (3,810)* and *Home & Kitchen (3,513)*, indicate a larger representative of the customer sentiment and represent a solid satisfaction within high-volume product areas.
+
+-   *Car & Motorbike (3.80)* and *Musical Instruments (3.90)* received the lowest ratings across all main categories, though receiving low volumes in review count. Similar to Office Products and Toy & Games, future customers may be hesitant in purchasing; however, a product that received a low rating off the bat may be more likely to cause a chain of unhappy customers.
+
+**Final Interpretation:**
+
+Categories receiving relatively high average ratings should be interpreted alongside the number of reviews. A product with a high rating and low volume of reviews may be less reliable than a slightly lower rating with a greater volume in reviews. The display of these two visualizations help identify which categories are highly rated, more specifically which ratings are statistically more robust. *Electronics* and *Home & Kitchen* remain at a high volume and consistent with their high ratings.
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(knitr)
+library(kableExtra)
+
+# Step 1: Use all reviews (no distinct!)
+df_all_reviews <- df_tidy %>%
+  mutate(
+    rating = round(as.numeric(rating), 1),
+    main_category = sapply(strsplit(category, '\\|'), `[`, 1)
+  )
+
+# Step 2: Create tabyl with full counts
+rating_table <- df_all_reviews %>%
+  tabyl(main_category, rating) %>%
+  adorn_totals(where = c("row", "col")) %>%
+  adorn_percentages(denominator = "all") %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_title(
+    placement = "combined",
+    row_name = "Main Category",
+    col_name = "Rating"
+  )
+
+# Step 3: Format absolute counts for display
+count_format <- attr(rating_table, "core") %>%
+  adorn_totals(where = c("row", "col")) %>%
+  mutate(across(where(is.numeric), format, big.mark = ","))
+
+# Step 4: Add absolute counts to % table
+final_table <- rating_table %>%
+  adorn_ns(position = "front", ns = count_format)
+
+# Step 5: Polished table with kableExtra
+final_table %>%
+  kable(
+    caption = "Distribution of Ratings Across All Reviews",
+    booktabs = TRUE,
+    align = c("l", rep("c", ncol(final_table) - 1))
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    font_size = 14
+  )
+
+View(final_table)
+
+```
+
+# FAIR Principles
+
 The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
 
 ### Findable
+
 You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
 
 ### Accessible
+
 Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
 
 ### Interoperable
+
 The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
 
 ### Reusable
+
 This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
 
 ## CARE Principles
-The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here. 
+
+The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
 
 
