@@ -138,7 +138,6 @@ This structure allows us to analyze product pricing, discount trends, rating pat
 
 ```{r}
 #| label: Data-Cleaning
-
 library(dplyr)
 library(tidyr)
 library(janitor)
@@ -172,6 +171,7 @@ df_tidy <- df_usd %>%
   separate_rows(user_id, sep = ",")
 
 View(df_tidy)
+
 ```
 
 # FAIR Principles
