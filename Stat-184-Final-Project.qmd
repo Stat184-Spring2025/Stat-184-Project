@@ -1,5 +1,5 @@
 ---
-title: "Stat 184 Final Project"
+title: "Amazon India Sales Analysis"
 author: "Soren Epple, Lucas Sadoulet, Tjoet Lakmana"
 date: "2025-05-01"
 format:
@@ -20,16 +20,135 @@ execute:
   warning: false
 ---
 
-# Amazon Sales India Dataset
+# Introduction
 
-The dataset used for this project is a comprehensive list of Amazon product sales in India.
+Shopping online has become a huge part of everyday life, and platforms like Amazon make it easy for people to browse, compare, and buy products in just a few clicks. The Amazon India Sales dataset gives us a behind-the-scenes look at how product pricing, discounts, and customer ratings play out across different types of items. With many products and reviews, it's a great dataset to explore what matters to online shoppers.
+
+Here are the main questions we set out to explore:
+
+-   How many ratings do products get per customer, and what does that tell us about engagement?
+
+    This helps us understand how actively customers interact with different types of products. A high number of ratings might indicate strong customer engagement or high sales volume, while low counts may suggest limited interaction or visibility.
+
+-   How does price vary across different product categories?
+
+    Exploring pricing by category helps us see how products are positioned in the market. Some categories might lean toward luxury pricing, while others depend on affordability and high-volume turnover.
+
+-   Is there a connection between discount percentage and customer ratings?
+
+    This question lets us explore whether discounts influence satisfaction. Do big discounts lead to better reviews or do they come at the cost of perceived value or quality?
+
+These questions are important because they help uncover patterns in online shopping behavior. By analyzing engagement, pricing, and satisfaction, we can better understand what makes a product stand out in a crowded marketplace.
+
+# Data Provenance
+
+The dataset we used comes from [Kaggle](https://www.kaggle.com/datasets/karkavelrajaj/amazon-sales-dataset), a popular online platform for data science and machine learning. Kaggle hosts thousands of datasets that are free to use for analysis, modeling, and competitions. It is widely used by students, researchers, and professionals to practice and share data projects.
+
+The specific dataset we used is called the "Amazon Sales Dataset," published by Karkavel Rajaj. It includes a wide range of product-related information from Amazon India. the key columns included in the dataset:
+
+-   **product_id**: Unique identifier for each product\
+
+-   **product_name**: Name of the product\
+
+-   **category**: Product category\
+
+-   **discounted_price**: Price after discount\
+
+-   **actual_price**: Original price before discount\
+
+-   **discount_percentage**: Percent discount applied\
+
+-   **rating**: Star rating given to the product\
+
+-   **rating_count**: Number of people who rated the product\
+
+-   **about_product**: Description or summary of the product\
+
+-   **user_id**: Unique ID of the user who left a review\
+
+-   **user_name**: Name of the reviewing user\
+
+-   **review_id**: ID for the specific review\
+
+-   **review_title**: Title of the user’s review\
+
+-   **review_content**: Full text of the user’s review\
+
+-   **img_link**: Image URL of the product\
+
+-   **product_link**: Link to the product listing on Amazon
+
+## Data Cleaning and Wrangling
+
+To prepare the data for analysis, we followed a multi-step process to clean, convert, and restructure the data for meaningful insights:
+
+### Removed Duplicate Product Entries
+
+We began by removing duplicate entries based on the `product_id` column using `distinct(product_id, .keep_all = TRUE)`. This step ensured that each product was represented only once in our dataset. Duplicates likely existed due to multiple reviews or variations for the same product. Since we were analyzing product-level trends (e.g., pricing, ratings), keeping only the first unique entry per product helped prevent double-counting.
+
+### Converted Prices from INR to USD
+
+The dataset included prices in Indian Rupees with formatting like the ₹ symbol and commas. We:
+
+-   Removed those symbols using `gsub()`
+
+-   Converted values into USD using a fixed exchange rate of ₹1 = \$0.012
+
+-   This allowed us to compare prices and discounts using a more familiar currency.
+
+### Cleaned and Converted Rating Counts 
+
+We cleaned the `rating_count` column by removing commas and converting it to a numeric type. This made it possible to perform calculations like total reviews or average engagement per category.
+
+### Selected Relevant Columns 
+
+To simplify our dataset and focus on the most useful information, we retained:
+
+-   `product_name`, `category`, `discounted_price_USD`, `actual_price_USD`, `rating`, `rating_count`, and `user_id`.
+
+This reduced clutter and made downstream analysis more efficient.
+
+### Seperated User IDs
+
+In the raw dataset, some products were associated with multiple `user_id`s stored in a single cell, separated by commas. This structure made it difficult to analyze individual customer interactions. To resolve this, we used the `separate_rows()` function to split these entries so that each `user_id` had its own row.
+
+This step allowed us to more accurately analyze customer engagement by treating each user as a distinct data point, which is especially important for questions involving rating count per customer or overall review behavior.
+
+### Final Tidied Data
+
+After completing the cleaning and transformation steps, our final dataset is organized in a tidy format where each row represents a unique interaction between a product and a user. The data includes only the most relevant variables needed to answer our research questions, with all prices converted to USD and formatted consistently.
+
+The columns in the final dataset include:
+
+-   **`product_name`** – Name of the product
+
+-   **`category`** – Full category path of the product
+
+-   **`discounted_price_USD`** – Discounted price in U.S. dollars
+
+-   **`actual_price_USD`** – Original price in U.S. dollars
+
+-   **`rating`** – Customer rating for the product
+
+-    **`rating_count`** – Number of customer ratings
+
+-   **`user_id`** – Individual customer ID, one per row
+
+This structure allows us to analyze product pricing, discount trends, rating patterns, and customer engagement at both the product and category levels. By simplifying and standardizing the dataset, we made it easier to create visualizations, perform summaries, and answer the key questions guiding our analysis.
 
 ```{r}
+#| label: Data-Cleaning
 library(dplyr)
 library(tidyr)
+library(janitor)
 library(knitr)
-data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
+library(kableExtra)
+library(ggplot2)
 
+data <- read.csv("amazon.csv")
+
+
+View(data)
 df_unique <- data %>%
   distinct(product_id, .keep_all = TRUE)
 
@@ -38,19 +157,51 @@ conversion_rate <- 0.012  # ₹1 = $0.012
 
 df_usd <- df_unique %>%
   mutate(
-    discounted_price_USD = as.numeric(gsub(",","",gsub("₹", "", discounted_price))),
-    actual_price_USD = as.numeric(gsub(",","",gsub("₹", "", actual_price)))
+    discounted_price_USD = as.numeric(gsub(",","",gsub("₹", "", discounted_price)))*conversion_rate,
+    actual_price_USD = as.numeric(gsub(",","",gsub("₹", "", actual_price)))*conversion_rate
     
   )
-
+View(df_usd)
 
 df_tidy <- df_usd %>%
   mutate(
     rating_count = as.numeric(gsub(",", "", rating_count)),
   ) %>%
-  select(user_id, product_name, category, discounted_price_USD, actual_price_USD, rating, rating_count) %>%
-  separate_rows(user_id, sep = ",") %>%
-  arrange(user_id)
+  select(product_name, category, discounted_price_USD, actual_price_USD, rating, rating_count, user_id) %>%
+  separate_rows(user_id, sep = ",")
+
+View(df_tidy)
+
+```
+
+# FAIR Principles
+
+The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
+
+## Findable
+
+You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
+
+## Accessible
+
+Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
+
+## Interoperable
+
+The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
+
+## Reusable
+
+This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
+
+# CARE Principles
+
+The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
+
+# Data Visualizations 
+
+```{r}
+#| label: tbl-summary
 
 df_summary <- df_tidy %>%
   filter(!is.na(rating) & rating != "") %>%
@@ -70,7 +221,8 @@ kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
 ```
 
 ```{r}
-library(ggplot2)
+#| label: fig-average-rating
+#| fig-cap: "Average Rating by Main Category"
 
 ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) +
   geom_bar(stat = "identity", color = "black", width = 0.7, show.legend = FALSE) +
@@ -92,7 +244,7 @@ ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, 
 
 ## Report
 
-With the following data visualizations provided above via graph and table, provides a comprehensive overview of customer satisfaction across various products. While the bar chart displays average rating for each main category, allowing for easy visual comparison, the table supplements this with total review counts, which gives context to the statistical reliability of those ratings.
+With the following data visualizations provided above via @tbl-summary and @fig-average-rating, provides a comprehensive overview of customer satisfaction across various products. While the bar chart displays average rating for each main category, allowing for easy visual comparison, the table supplements this with total review counts, which gives context to the statistical reliability of those ratings.
 
 **Key Observations:**
 
@@ -107,78 +259,94 @@ With the following data visualizations provided above via graph and table, provi
 Categories receiving relatively high average ratings should be interpreted alongside the number of reviews. A product with a high rating and low volume of reviews may be less reliable than a slightly lower rating with a greater volume in reviews. The display of these two visualizations help identify which categories are highly rated, more specifically which ratings are statistically more robust. *Electronics* and *Home & Kitchen* remain at a high volume and consistent with their high ratings.
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(janitor)
-library(knitr)
-library(kableExtra)
+#| label: fig-scattor-plot
+#| fig-cap: "Actuacl Price vs Discounted Price (USD)"
+#| fig-pos: H
 
-# Step 1: Use all reviews (no distinct!)
-df_all_reviews <- df_tidy %>%
-  mutate(
-    rating = round(as.numeric(rating), 1),
-    main_category = sapply(strsplit(category, '\\|'), `[`, 1)
-  )
+# Step 1: Add a simplified top-level product category
+# This extracts the first category before the "|" symbol to reduce overplotting and make the plot easier to interpret.
+df_tidy <- df_tidy %>%
+  mutate(main_category = sub("\\|.*", "", category))
 
-# Step 2: Create tabyl with full counts
-rating_table <- df_all_reviews %>%
-  tabyl(main_category, rating) %>%
-  adorn_totals(where = c("row", "col")) %>%
-  adorn_percentages(denominator = "all") %>%
-  adorn_pct_formatting(digits = 2) %>%
-  adorn_title(
-    placement = "combined",
-    row_name = "Main Category",
-    col_name = "Rating"
-  )
+# Step 2: Create scatter plot comparing actual and discounted prices
+# This plot helps us visualize the discount patterns across product categories.
+# Each point represents a product, colored by its main-level category.
 
-# Step 3: Format absolute counts for display
-count_format <- attr(rating_table, "core") %>%
-  adorn_totals(where = c("row", "col")) %>%
-  mutate(across(where(is.numeric), format, big.mark = ","))
+ggplot(df_tidy, aes(x = actual_price_USD, y = discounted_price_USD, color = main_category)) +
+  geom_point(alpha = 0.5) +  # Use semi-transparent points to reduce overplotting
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Reference line: no discount
+  coord_cartesian(xlim = c(0, 500), ylim = c(0, 500)) +  # Focus on products under $500
+  labs(
+    title = "Actual Price vs Discounted Price (USD)",
+    x = "Actual Price (USD)",
+    y = "Discounted Price (USD)",
+    color = "Category"
+  ) +
+  theme_minimal()
 
-# Step 4: Add absolute counts to % table
-final_table <- rating_table %>%
-  adorn_ns(position = "front", ns = count_format)
-
-# Step 5: Polished table with kableExtra
-final_table %>%
-  kable(
-    caption = "Distribution of Ratings Across All Reviews",
-    booktabs = TRUE,
-    align = c("l", rep("c", ncol(final_table) - 1))
-  ) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "condensed"),
-    font_size = 14
-  )
-
-View(final_table)
 
 ```
 
-# FAIR Principles
+## Report 
 
-The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
+The scatter plot @fig-scattor-plot visualizes the relationship between a product's actual price and its discounted price across different categories. Each point represents a product, colored by the main category, and the dashed line (where actual = discounted) acts as a reference for no discount.
 
-### Findable
+#### Key Observations:
 
-You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
+-   Most points below the diagonal line, confirming that discounts are widespread.
 
-### Accessible
+-   Some categories like *Electronics* and *Home & Kitchen* show a wide spread of discount amounts, suggesting more aggressive and varied pricing strategies.
 
-Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
+-   *Office Products* and *Toys & Games* cluster closer to the diagonal, indicating that these products are less frequently discounted or have smaller discount margins
 
-### Interoperable
+#### Final Interpretation:
 
-The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
+This plot helps uncover which categories tend to be marketed with more competitive pricing. Categories with wide discount gaps may use pricing as a key strategy to attract buyers, while those closer to full price may rely more on brand value or niche appeal. This aligns with the earlier analysis of customer satisfaction price and perception often go hand-in-hand.
 
-### Reusable
+To clearly visualize how discounts vary across categories, we created a bar plot that ranks product categories from those with the highest average discounts to those with the lowest:
 
-This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
+```{r}
+#| label: fig-bar-plot
+#| fig-cap: "Average Discount by Category"
+#| fig-pos: H
 
-## CARE Principles
+# Calculate and plot the average discount by product category
+df_tidy %>%
+  # Step 1: Create a new column for discount value in USD
+  mutate(discount = actual_price_USD - discounted_price_USD) %>%
 
-The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
+  # Step 2: Group data by top-level category
+  group_by(main_category) %>%
 
+  # Step 3: Calculate the average discount per category
+  summarise(avg_discount = mean(discount, na.rm = TRUE)) %>%
 
+  # Step 4: Plot a horizontal bar chart of average discounts
+  ggplot(aes(x = reorder(main_category, avg_discount), y = avg_discount, fill = main_category)) +
+  geom_col() +  # Create solid bars to represent average discount
+  coord_flip() +  # Flip coordinates for easier reading of category names
+  labs(
+    title = "Average Discount by Category",
+    x = "Main Category",
+    y = "Average Discount (USD)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove legend for cleaner look since bars are labeled
+
+```
+
+## Report 
+
+@fig-bar-plot presents a horizontal bar chart illustrating the average discount in USD for each main-level product category. By calculating the difference between actual and discounted prices, and then averaging these values per category, the chart allows us to compare how aggressively each category is discounted.
+
+### Key Observations:
+
+-   Categories at the top of the chart (*Electronics, Home & Kitchen, Car & Motorbikes)* represent those with the largest average discounts, indicating sellers may rely heavily on promotions in these markets to stay competitive
+
+-   categories toward the bottom (*Toy & Games, Office Products, Home Improvement)* reflect smaller or less frequent discounts, possibly signaling more stable pricing, stronger brand value, or lower competitive pressure
+
+-   Some categories may cluster closely together in average discount, suggesting consistent pricing behavior across similar product types.
+
+## Final Interpretation
+
+This visualization highlights how pricing strategies vary across product categories. Categories like *Electronics* and *Home & Kitchen* stand out for offering some of the highest average discounts, and referring to @fig-average-rating they also maintain high volumes of reviews and consistent average ratings, as seen in the earlier analysis. This correlation suggests that in certain high-volume categories, deep discounts do not undermine customer satisfaction, in fact, they may enhance it by making popular, well-reviewed products more accessible. On the other hand, categories with lower discounts and fewer reviews may appear more premium or niche but lack the broader customer validation. Together, these insights reinforce that discounting, when paired with quality and demand, can still result in strong customer engagement and satisfaction.
