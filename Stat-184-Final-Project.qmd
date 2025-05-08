@@ -96,11 +96,11 @@ The dataset included prices in Indian Rupees with formatting like the ₹ symbol
 
 -   This allowed us to compare prices and discounts using a more familiar currency.
 
-### Cleaned and Converted Rating Counts 
+### Cleaned and Converted Rating Counts
 
 We cleaned the `rating_count` column by removing commas and converting it to a numeric type. This made it possible to perform calculations like total reviews or average engagement per category.
 
-### Selected Relevant Columns 
+### Selected Relevant Columns
 
 To simplify our dataset and focus on the most useful information, we retained:
 
@@ -108,7 +108,7 @@ To simplify our dataset and focus on the most useful information, we retained:
 
 This reduced clutter and made downstream analysis more efficient.
 
-### Seperated User IDs
+### Separated User IDs
 
 In the raw dataset, some products were associated with multiple `user_id`s stored in a single cell, separated by commas. This structure made it difficult to analyze individual customer interactions. To resolve this, we used the `separate_rows()` function to split these entries so that each `user_id` had its own row.
 
@@ -130,15 +130,13 @@ The columns in the final dataset include:
 
 -   **`rating`** – Customer rating for the product
 
--    **`rating_count`** – Number of customer ratings
+-   **`rating_count`** – Number of customer ratings
 
 -   **`user_id`** – Individual customer ID, one per row
 
-
 ## Paradigm
 
-
-For this project, we are looking to conduct exploratory analysis, since while we’re are looking for patterns and discrepancies in the  data we are analyzing, we don’t have any conclusions we are searching to confirm or rebuff. We did this because while are data set in large and contains many useful data points, it doesn’t contain many pieces of information that would be important to any preexisting hypothesis including dates, concrete individual tables, and uncertainty around the scope of the dataset. This last one is most important because while we know it’s Amazon data for India in 2025, we believe that they would be significantly more enemies if that was truly the extent of the dataset. Additionally, it seems this dataset only covers technology products, but is not specified in the data download. Without a more concrete scope to the dataset, we felt that confirmatory data analysis would not work as well. Additionally we wanted to use Tidyverse in our project since it would allow us to generate more interesting graphs, right cleaner code, and programming in a way we’re more familiar with.
+For this project, we are looking to conduct exploratory analysis, since while looking for patterns and discrepancies in the data we are analyzing, we don’t have any conclusions we are searching to confirm or refute. We did this because while our data is large and contains many useful data points, it doesn’t contain many pieces of information that would be important to any preexisting hypothesis, including dates, concrete individual tables, and uncertainty around the scope of the dataset. This last one is most important because while we know it’s Amazon data for India in 2025, we believe that they would be significantly more enemies if that were truly the extent of the dataset. Additionally, it seems this dataset only covers technology products, but it is not specified in the data download. Without a more concrete scope for the dataset, we felt that confirmatory data analysis would not work as well. Additionally we wanted to use Tidyverse in our project since it would allow us to generate more interesting graphs, cleaner code, and programming in a way we’re more familiar with.
 
 This structure allows us to analyze product pricing, discount trends, rating patterns, and customer engagement at both the product and category levels. By simplifying and standardizing the dataset, we made it easier to create visualizations, perform summaries, and answer the key questions guiding our analysis.
 
@@ -152,7 +150,6 @@ library(kableExtra)
 library(ggplot2)
 
 data <- read.csv("amazon.csv")
-
 
 View(data)
 df_unique <- data %>%
@@ -186,22 +183,47 @@ The dataset we used for this project aligns with what are known as the FAIR Prin
 
 
 ### Findable
-You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform. 
+
+You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
 
 ### Accessible
+
 Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily. Additionally, to ensure our data was accessible, we used qmd files to present the data in a more meaningful way, added comments to have our code be readable, and have our images contained alt text to assist those with screen readers to also have access to our work.
 
 ### Interoperable
-The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using. 
+
+The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
 
 ### Reusable
-This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research. Additionally, we included the dataset we used and programmed using fairly standard methods and import, these scripts should be easier to alter and reuse. 
+
+This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research. Additionally, we included the dataset we used and programmed using fairly standard methods and import, these scripts should be easier to alter and reuse.
 
 ## CARE Principles
-The CARE Principles are all about making sure data involving communities is handled ethically and respectfully. While we arent able to alter the public dataset, we can apply this to our project, to ensure that our data retained some privacy and remained ethical to the community and subject of the data. We ensured that conclusions derived from this dataset would not harm individuals or communities to the best of our knowledge, instead becoming a possible useful tool for the public and researchers alike. By removing the names of individuals and products from our dataset we are able to secure anonymity for these people and companies. We also recognize due to the open source nature of the code and us not being responsible for publishing of the dataset itself, this malicious data could be generated again. 
 
+The CARE Principles are all about making sure data involving communities is handled ethically and respectfully. While we aren't able to alter the public dataset, we can apply this to our project, to ensure that our data retains some privacy and remains ethical to the community and the subject of the data. We ensured that conclusions derived from this dataset would not harm individuals or communities to the best of our knowledge, instead becoming a possible useful tool for the public and researchers alike. By removing the names of individuals and products from our dataset, we are able to secure anonymity for these people and companies. We also recognize that due to the open-source nature of the code and our not being responsible for the publishing of the dataset itself, this malicious data could be generated again.
 
-# Data Visualizations 
+## Findable
+
+You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
+
+## Accessible
+
+Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
+
+## Interoperable
+
+The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
+
+## Reusable
+
+This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
+
+# CARE Principles
+
+The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
+
+# Data Visualizations
+
 
 ```{r}
 #| label: tbl-summary
@@ -290,7 +312,8 @@ ggplot(df_tidy, aes(x = actual_price_USD, y = discounted_price_USD, color = main
 
 ```
 
-## Report 
+## Report
+
 
 The scatter plot @fig-scattor-plot visualizes the relationship between a product's actual price and its discounted price across different categories. Each point represents a product, colored by the main category, and the dashed line (where actual = discounted) acts as a reference for no discount.
 
@@ -336,9 +359,10 @@ df_tidy %>%
   theme_minimal() +
   theme(legend.position = "none")  # Remove legend for cleaner look since bars are labeled
 
+
 ```
 
-## Report 
+## Report
 
 @fig-bar-plot presents a horizontal bar chart illustrating the average discount in USD for each main-level product category. By calculating the difference between actual and discounted prices, and then averaging these values per category, the chart allows us to compare how aggressively each category is discounted.
 
