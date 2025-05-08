@@ -172,8 +172,10 @@ conversion_rate <- 0.012  # ₹1 = $0.012
 # STEP 3: Converting to USD given Rupee currency
 df_usd <- df_unique %>%
   mutate(
-    discounted_price_USD = as.numeric(gsub(",","",gsub("₹", "", discounted_price)))*conversion_rate,
-    actual_price_USD = as.numeric(gsub(",","",gsub("₹", "", actual_price)))*conversion_rate
+    discounted_price_USD = as.numeric(
+        gsub(",","",gsub("₹", "", discounted_price)))*conversion_rate,
+    actual_price_USD = as.numeric(
+        gsub(",","",gsub("₹", "", actual_price)))*conversion_rate
     
   )
 View(df_usd)
@@ -183,7 +185,8 @@ df_tidy <- df_usd %>%
   mutate(
     rating_count = as.numeric(gsub(",", "", rating_count)),
   ) %>%
-  select(product_name, category, discounted_price_USD, actual_price_USD, rating, rating_count, user_id) %>%
+  select(product_name, category, discounted_price_USD, 
+         actual_price_USD, rating, rating_count, user_id) %>%
   separate_rows(user_id, sep = ",")
 
 View(df_tidy)
@@ -242,6 +245,7 @@ kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
 
 # STEP 1: Create a bar graph of average ratings by category using df_summary
 ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) + # arranges by average rating for enhanced readability
+
   geom_bar(stat = "identity", color = "black", width = 0.7, show.legend = FALSE) +
   scale_fill_brewer(palette = "Set3") +
   labs(
@@ -367,6 +371,77 @@ df_tidy %>%
 ## Final Interpretation
 
 This visualization highlights how pricing strategies vary across product categories. Categories like *Electronics* and *Home & Kitchen* stand out for offering some of the highest average discounts, and referring to @fig-average-rating they also maintain high volumes of reviews and consistent average ratings, as seen in the earlier analysis. This correlation suggests that in certain high-volume categories, deep discounts do not undermine customer satisfaction, in fact, they may enhance it by making popular, well-reviewed products more accessible. On the other hand, categories with lower discounts and fewer reviews may appear more premium or niche but lack the broader customer validation. Together, these insights reinforce that discounting, when paired with quality and demand, can still result in strong customer engagement and satisfaction.
+
+
+# Product Bought and Spending by User
+
+To clearly visualize how users spending habits can be generalized, using the amount of items and the average cost of items they bought, we created a dot plot to measure these two related details in how they are corrilated by user.
+
+```{r}
+#| label: fig-user-spending
+#| fig-cap: "Total Spending and Number of Items Bought by Users"
+#| fig-pos: H
+
+# Step 1: Calculate the average discount price and number of items bought by user
+df_individuals <- df_unique %>% 
+  separate_rows(user_name,sep=',') %>%
+  mutate(
+    discounted_price_clean = as.numeric(gsub("[₹,]", "", discounted_price))
+  ) %>%
+  group_by(user_name) %>%
+  summarise(
+    total_spending = sum(discounted_price_clean, na.rm = TRUE),
+    item_count = n(),
+    average_price = total_spending / item_count,
+    .groups = 'drop'
+  )
+
+# Step 2: Create plot mapping both items and average cost, including coloring by the total spending.
+ggplot(df_individuals, aes(x = item_count, y = average_price)) +
+  geom_point(aes(size = total_spending, color = total_spending)) +
+  labs(
+    title = "Average Cost per Item vs. Number of Items Bought",
+    x = "Number of Items Bought",
+    y = "Average Cost per Item",
+    color = "Total Spending",
+    size = "Total Spending"
+  ) +
+  theme_minimal()
+
+# Note: Outlier users with ~600 and ~50 items offsetting all data points, removed for ease of understanding 
+df_individuals <- df_individuals %>%
+  filter(item_count != max(item_count))
+df_individuals <- df_individuals %>%
+  filter(item_count != max(item_count))
+
+ggplot(df_individuals, aes(x = item_count, y = average_price)) +
+  geom_point(aes(size = total_spending, color = total_spending)) +
+  labs(
+    title = "Average Cost per Item vs. Number of Items Bought",
+    x = "Number of Items Bought",
+    y = "Average Cost per Item",
+    color = "Total Spending",
+    size = "Total Spending"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+## Report
+
+@fig-user-spending presents a scatter plot showing the relationship between the number of items bought and the average cost per item for each user. Each point represents a user, with the x-axis showing how many items they purchased and the y-axis showing the average price they paid. The size and color of each point indicate the user's total spending, allowing for visual comparison of spending behavior across users.
+
+### Key Observations:
+
+-   Most of the highest total spending follows a curve, showing that users buys many cheap items or few expensive items, their total spending evens out. 
+
+-   These larger spenders buys tens and hundreds of items, labeled as outlines are suspected to be specialty users, like companies, or bot accounts, improving ratings on cheap products to boost the items performance.
+
+## Final Interpretation
+
+This visualization highlights how spending behavior varies significantly across individual users. As shown in @fig-user-spending, there is a clear inverse relationship between the number of items purchased and the average cost per item, forming a curved distribution. This suggests two dominant strategies: some users concentrate their spending on a few high-cost items, while others buy many low-cost purchases. Despite these differing approaches, overall spending levels among high-value users remain surprisingly consistent. Some account with exceptionally high rating counts offset a lot of the data as outliers, rating 100's of more items that the next highest reviewer. We suspect that these are bots engaging in mass purchasing to boost product rankings, since these are accounts which comment a lot, not indicative of companies. This is very surprising that we caught this in our findings, and shows utiliy for these graphs that we hadn't intended. More generally, these findings suggest that high spending is not necessarily tied to a single consumer behavior but may reflect a broader mix of user types and purchasing goals within the platform.
 
 # **Code Appendix**
 
