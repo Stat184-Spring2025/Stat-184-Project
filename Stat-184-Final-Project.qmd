@@ -26,6 +26,14 @@ Shopping online has become a huge part of everyday life, and platforms like Amaz
 
 Here are the main questions we set out to explore:
 
+**Soren's Exploratory Question:**
+
+-   What products tend to have a higher rating with respect to their main category?
+
+    This helps us understand which products are actively being bought and reviewed. It can also be helpful to make interpretations with respect to review count, and how depending on the number can affect the confidence in the product rating. High volumes in review count generally show a higher confidence in the rating, whereas, lower volumes have a lesser amount of confidence.
+
+**Tjoet's Exploratory Questions?**
+
 -   How many ratings do products get per customer, and what does that tell us about engagement?
 
     This helps us understand how actively customers interact with different types of products. A high number of ratings might indicate strong customer engagement or high sales volume, while low counts may suggest limited interaction or visibility.
@@ -142,6 +150,7 @@ This structure allows us to analyze product pricing, discount trends, rating pat
 
 ```{r}
 #| label: Data-Cleaning
+# STEP 1: Load necessary packages 
 library(dplyr)
 library(tidyr)
 library(janitor)
@@ -152,6 +161,7 @@ library(ggplot2)
 data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
 
 
+# STEP 2: Making sure no duplicate entries
 View(data)
 df_unique <- data %>%
   distinct(product_id, .keep_all = TRUE)
@@ -159,6 +169,7 @@ df_unique <- data %>%
 
 conversion_rate <- 0.012  # ₹1 = $0.012
 
+# STEP 3: Converting to USD given Rupee currency
 df_usd <- df_unique %>%
   mutate(
     discounted_price_USD = as.numeric(
@@ -169,6 +180,7 @@ df_usd <- df_unique %>%
   )
 View(df_usd)
 
+# STEP 4: Tidying Data with case being individual user (user_id)
 df_tidy <- df_usd %>%
   mutate(
     rating_count = as.numeric(gsub(",", "", rating_count)),
@@ -209,19 +221,19 @@ The CARE Principles are all about making sure data involving communities is hand
 
 ```{r}
 #| label: tbl-summary
-
+# STEP 1: Organize products based on main category and calculate their average ratings and accumulate the total reviews per category
 df_summary <- df_tidy %>%
   filter(!is.na(rating) & rating != "") %>%
   mutate(
     rating = as.numeric(rating),
-    main_category = sapply(strsplit(category, '\\|'), `[`, 1)
+    main_category = sapply(strsplit(category, '\\|'), `[`, 1) # Takes main category
   ) %>%
   group_by(main_category) %>%
   summarise(
     avg_rating = round(mean(rating, na.rm = TRUE), 2),
     total_reviews = n()
   ) %>%
-  arrange(desc(total_reviews))
+  arrange(desc(total_reviews)) # sorts by total reviews
 
 # Display as polished table
 kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
@@ -231,8 +243,9 @@ kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
 #| label: fig-average-rating
 #| fig-cap: "Average Rating by Main Category"
 
-ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), 
-       y = avg_rating, fill = main_category)) +
+# STEP 1: Create a bar graph of average ratings by category using df_summary
+ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) + # arranges by average rating for enhanced readability
+
   geom_bar(stat = "identity", color = "black", width = 0.7, show.legend = FALSE) +
   scale_fill_brewer(palette = "Set3") +
   labs(
@@ -431,5 +444,6 @@ ggplot(df_individuals, aes(x = item_count, y = average_price)) +
 This visualization highlights how spending behavior varies significantly across individual users. As shown in @fig-user-spending, there is a clear inverse relationship between the number of items purchased and the average cost per item, forming a curved distribution. This suggests two dominant strategies: some users concentrate their spending on a few high-cost items, while others buy many low-cost purchases. Despite these differing approaches, overall spending levels among high-value users remain surprisingly consistent. Some account with exceptionally high rating counts offset a lot of the data as outliers, rating 100's of more items that the next highest reviewer. We suspect that these are bots engaging in mass purchasing to boost product rankings, since these are accounts which comment a lot, not indicative of companies. This is very surprising that we caught this in our findings, and shows utiliy for these graphs that we hadn't intended. More generally, these findings suggest that high spending is not necessarily tied to a single consumer behavior but may reflect a broader mix of user types and purchasing goals within the platform.
 
 # **Code Appendix**
+
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
