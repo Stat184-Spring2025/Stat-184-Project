@@ -150,6 +150,7 @@ This structure allows us to analyze product pricing, discount trends, rating pat
 
 ```{r}
 #| label: Data-Cleaning
+# STEP 1: Load necessary packages 
 library(dplyr)
 library(tidyr)
 library(janitor)
@@ -160,6 +161,7 @@ library(ggplot2)
 data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
 
 
+# STEP 2: Making sure no duplicate entries
 View(data)
 df_unique <- data %>%
   distinct(product_id, .keep_all = TRUE)
@@ -167,6 +169,7 @@ df_unique <- data %>%
 
 conversion_rate <- 0.012  # ₹1 = $0.012
 
+# STEP 3: Converting to USD given Rupee currency
 df_usd <- df_unique %>%
   mutate(
     discounted_price_USD = as.numeric(gsub(",","",gsub("₹", "", discounted_price)))*conversion_rate,
@@ -175,6 +178,7 @@ df_usd <- df_unique %>%
   )
 View(df_usd)
 
+# STEP 4: Tidying Data with case being individual user (user_id)
 df_tidy <- df_usd %>%
   mutate(
     rating_count = as.numeric(gsub(",", "", rating_count)),
@@ -214,19 +218,19 @@ The CARE Principles are all about making sure data involving communities is hand
 
 ```{r}
 #| label: tbl-summary
-
+# STEP 1: Organize products based on main category and calculate their average ratings and accumulate the total reviews per category
 df_summary <- df_tidy %>%
   filter(!is.na(rating) & rating != "") %>%
   mutate(
     rating = as.numeric(rating),
-    main_category = sapply(strsplit(category, '\\|'), `[`, 1)
+    main_category = sapply(strsplit(category, '\\|'), `[`, 1) # Takes main category
   ) %>%
   group_by(main_category) %>%
   summarise(
     avg_rating = round(mean(rating, na.rm = TRUE), 2),
     total_reviews = n()
   ) %>%
-  arrange(desc(total_reviews))
+  arrange(desc(total_reviews)) # sorts by total reviews
 
 # Display as polished table
 kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
@@ -236,7 +240,8 @@ kable(df_summary, caption = "Average Rating and Total Reviews by Main Category")
 #| label: fig-average-rating
 #| fig-cap: "Average Rating by Main Category"
 
-ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) +
+# STEP 1: Create a bar graph of average ratings by category using df_summary
+ggplot(df_summary, aes(x = reorder(main_category, -avg_rating), y = avg_rating, fill = main_category)) + # arranges by average rating for enhanced readability
   geom_bar(stat = "identity", color = "black", width = 0.7, show.legend = FALSE) +
   scale_fill_brewer(palette = "Set3") +
   labs(
