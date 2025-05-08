@@ -26,6 +26,14 @@ Shopping online has become a huge part of everyday life, and platforms like Amaz
 
 Here are the main questions we set out to explore:
 
+**Soren's Exploratory Question:**
+
+-   What products tend to have a higher rating with respect to their main category?
+
+    This helps us understand which products are actively being bought and reviewed. It can also be helpful to make interpretations with respect to review count, and how depending on the number can affect the confidence in the product rating. High volumes in review count generally show a higher confidence in the rating, whereas, lower volumes have a lesser amount of confidence.
+
+**Tjoet's Exploratory Questions?**
+
 -   How many ratings do products get per customer, and what does that tell us about engagement?
 
     This helps us understand how actively customers interact with different types of products. A high number of ratings might indicate strong customer engagement or high sales volume, while low counts may suggest limited interaction or visibility.
@@ -356,5 +364,6 @@ df_tidy %>%
 This visualization highlights how pricing strategies vary across product categories. Categories like *Electronics* and *Home & Kitchen* stand out for offering some of the highest average discounts, and referring to @fig-average-rating they also maintain high volumes of reviews and consistent average ratings, as seen in the earlier analysis. This correlation suggests that in certain high-volume categories, deep discounts do not undermine customer satisfaction, in fact, they may enhance it by making popular, well-reviewed products more accessible. On the other hand, categories with lower discounts and fewer reviews may appear more premium or niche but lack the broader customer validation. Together, these insights reinforce that discounting, when paired with quality and demand, can still result in strong customer engagement and satisfaction.
 
 # **Code Appendix**
+
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
