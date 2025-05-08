@@ -163,6 +163,8 @@ For this project, we are looking to conduct exploratory analysis, since while lo
 
 This structure allows us to analyze product pricing, discount trends, rating patterns, and customer engagement at both the product and category levels. By simplifying and standardizing the dataset, we made it easier to create visualizations, perform summaries, and answer the key questions guiding our analysis.
 
+###PCIP:
+We wanted to change the currency, simple text replacement and rupee to usd conversion. We wanted to remove duplicate data and ensure the data was clean. Priorities necessary columns and removing excess columns such as image links and image files.
 ```{r}
 #| label: Data-Cleaning
 # STEP 1: Load necessary packages 
@@ -234,6 +236,8 @@ The CARE Principles are all about making sure data involving communities is hand
 
 # Data Visualizations
 
+### PCIP
+We wanted to ensure that each subcategory was counted towards the main category. By doing this, we wanted to include everything before the first occurence of "|", which signified the main category. Including the average rating towards that cateogory along with the acculumated amount of reviews towards the specified main category was necessary.
 ```{r}
 #| label: tbl-summary
 # STEP 1: Organize products based on main category and calculate their average ratings and accumulate the total reviews per category
@@ -391,7 +395,8 @@ This visualization highlights how pricing strategies vary across product categor
 # Product Bought and Spending by User
 
 To clearly visualize how users spending habits can be generalized, using the amount of items and the average cost of items they bought, we created a dot plot to measure these two related details in how they are corrilated by user.
-
+### PCIP
+For this code section I’ll need to create a new table for individuals users. To do this I split the users list by commas and the group these rows by their names. This grouping would include key detail including the total amount spend and the number of items bought. Then creating a table which merges these two concepts, probably a dot plot in 2D.
 ```{r}
 #| label: fig-user-spending
 #| fig-cap: "Total Spending and Number of Items Bought by Users"
