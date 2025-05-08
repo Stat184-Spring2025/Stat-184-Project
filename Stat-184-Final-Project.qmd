@@ -149,7 +149,8 @@ library(knitr)
 library(kableExtra)
 library(ggplot2)
 
-data <- read.csv("amazon.csv")
+data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
+
 
 View(data)
 df_unique <- data %>%
@@ -181,7 +182,6 @@ View(df_tidy)
 
 The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
 
-
 ### Findable
 
 You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
@@ -202,28 +202,7 @@ This dataset is shared in a way that encourages others to use it. Because it’s
 
 The CARE Principles are all about making sure data involving communities is handled ethically and respectfully. While we aren't able to alter the public dataset, we can apply this to our project, to ensure that our data retains some privacy and remains ethical to the community and the subject of the data. We ensured that conclusions derived from this dataset would not harm individuals or communities to the best of our knowledge, instead becoming a possible useful tool for the public and researchers alike. By removing the names of individuals and products from our dataset, we are able to secure anonymity for these people and companies. We also recognize that due to the open-source nature of the code and our not being responsible for the publishing of the dataset itself, this malicious data could be generated again.
 
-## Findable
-
-You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
-
-## Accessible
-
-Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
-
-## Interoperable
-
-The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
-
-## Reusable
-
-This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
-
-# CARE Principles
-
-The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
-
 # Data Visualizations
-
 
 ```{r}
 #| label: tbl-summary
@@ -285,7 +264,7 @@ Categories receiving relatively high average ratings should be interpreted along
 
 ```{r}
 #| label: fig-scattor-plot
-#| fig-cap: "Actuacl Price vs Discounted Price (USD)"
+#| fig-cap: "Actual Price vs Discounted Price (USD)"
 #| fig-pos: H
 
 # Step 1: Add a simplified top-level product category
@@ -313,7 +292,6 @@ ggplot(df_tidy, aes(x = actual_price_USD, y = discounted_price_USD, color = main
 ```
 
 ## Report
-
 
 The scatter plot @fig-scattor-plot visualizes the relationship between a product's actual price and its discounted price across different categories. Each point represents a product, colored by the main category, and the dashed line (where actual = discounted) acts as a reference for no discount.
 
@@ -359,7 +337,6 @@ df_tidy %>%
   theme_minimal() +
   theme(legend.position = "none")  # Remove legend for cleaner look since bars are labeled
 
-
 ```
 
 ## Report
@@ -377,3 +354,7 @@ df_tidy %>%
 ## Final Interpretation
 
 This visualization highlights how pricing strategies vary across product categories. Categories like *Electronics* and *Home & Kitchen* stand out for offering some of the highest average discounts, and referring to @fig-average-rating they also maintain high volumes of reviews and consistent average ratings, as seen in the earlier analysis. This correlation suggests that in certain high-volume categories, deep discounts do not undermine customer satisfaction, in fact, they may enhance it by making popular, well-reviewed products more accessible. On the other hand, categories with lower discounts and fewer reviews may appear more premium or niche but lack the broader customer validation. Together, these insights reinforce that discounting, when paired with quality and demand, can still result in strong customer engagement and satisfaction.
+
+# **Code Appendix**
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
