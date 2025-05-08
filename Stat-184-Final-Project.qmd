@@ -422,11 +422,16 @@ ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   labs(
     title = "Average Cost per Item vs. Number of Items Bought",
     x = "Number of Items Bought",
-    y = "Average Cost per Item",
+    y = "Average Cost per Item (USD)",
     color = "Total Spending",
     size = "Total Spending"
   ) +
   theme_minimal()
+```
+```{r}
+#| label: fig-user-spending-outliers-removed
+#| fig-cap: "Total Spending and Number of Items Bought by Users ( Outlier Removed )"
+#| fig-pos: H
 
 # Step 3: Remove Outliers, users with ~600 and ~50 items offsetting all data points, removed for ease of understanding 
 df_individuals <- df_individuals %>%
@@ -438,9 +443,9 @@ df_individuals <- df_individuals %>%
 ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   geom_point(aes(size = total_spending, color = total_spending)) +
   labs(
-    title = "Average Cost per Item vs. Number of Items Bought",
+    title = "Average Cost per Item vs. Number of Items Bought ( Outlier Removed )",
     x = "Number of Items Bought",
-    y = "Average Cost per Item",
+    y = "Average Cost per Item (USD)",
     color = "Total Spending",
     size = "Total Spending"
   ) +
