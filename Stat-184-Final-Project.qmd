@@ -23,7 +23,10 @@ execute:
 ## Introduction
 
 
-## Data Provenance
+## Paradigm
+
+
+For this project, we are looking to conduct exploratory analysis, since while we’re are looking for patterns and discrepancies in the  data we are analyzing, we don’t have any conclusions we are searching to confirm or rebuff. We did this because while are data set in large and contains many useful data points, it doesn’t contain many pieces of information that would be important to any preexisting hypothesis including dates, concrete individual tables, and uncertainty around the scope of the dataset. This last one is most important because while we know it’s Amazon data for India in 2025, we believe that they would be significantly more enemies if that was truly the extent of the dataset. Additionally, it seems this dataset only covers technology products, but is not specified in the data download. Without a more concrete scope to the dataset, we felt that confirmatory data analysis would not work as well. Additionally we wanted to use Tidyverse in our project since it would allow us to generate more interesting graphs, right cleaner code, and programming in a way we’re more familiar with.
 
 
 ## FAIR Principles 
