@@ -46,6 +46,21 @@ Here are the main questions we set out to explore:
 
     This question lets us explore whether discounts influence satisfaction. Do big discounts lead to better reviews or do they come at the cost of perceived value or quality?
 
+**Lucas' Exploratory Questions?**
+
+-   What can we learn from users' spending habits?
+
+    Comparing the users spending habits through making a new table of only users' spending total, and the number of products bought. This will help us better understand trends of the population, and possible determine the unique nature of inidividual users if their are ouliers. 
+
+-   Can we learn more about users' ratings vs the discount they received for the product?
+    
+    This is a questions we were interseting in answer, although struggled to bring to work. While the average users rating for each product is avaliable, and the users are also present, it doesn't break down rating by users. It only shows the users comments. We could have worked around this by either taking the average of the average user's spending, which would have yeilded inaccurate results for users of popular products. Alternatively, we could have guessed their ratings based off of their comments, but this sentiment analysis wasn't within the scope of this project. 
+
+-   Retroactive Questions: Can we locate bots using our data analysis?
+
+    This question has alot of utility for real world Amazon problem, preventing scams and fake reviews, which is a big issue for ensuring user protections. We appear to have caught bot-like activity in the population set, since this account followed both a high number of comments by low average spending.
+
+
 These questions are important because they help uncover patterns in online shopping behavior. By analyzing engagement, pricing, and satisfaction, we can better understand what makes a product stand out in a crowded marketplace.
 
 # Data Provenance
