@@ -1,23 +1,35 @@
-# Project Title
+# Amazon India Sales Analysis 
 
-Write a 1-2 sentences that quickly and clearly convey what your repo is for.
+This project explores pricing, ratings, and discount patterns in the Amazon India marketplace using a dataset from Kaggle.
 
 ## Overview
+The goal of this project is to uncover relationships between product pricing, discount percentages, customer ratings, and product categories. Through data cleaning, wrangling, and visualization in R, we aim to better understand consumer behavior and marketplace dynamics on Amazon India.
 
-Expand on those introductory sentences with a brief but informative description of your project's purpose and goals. This section should help visitors decide whether they should dig deeper into your repo/project.
 
-### Interesting Insight
+## Interesting Insight
+### Actual Prive vs Discounted Price 
+This scatter plot compares the original price of each product (on the x-axis) with its discounted price (on the y-axis). Each point represents a single product, and the points are color-coded by product category. A dashed diagonal reference line is included to show where actual price equals discounted price—meaning no discount.
 
-This is optional but highly recommended. You'll include one interesting insight from your project as part of the README. This insight is most effective when you include a visual. Keep in mind that this visual must be included as an image file (e.g., JPG, PNG, etc.). You can export plots created with `{ggplot2}` by using the function `ggsave`.
+Products that appear below this line are being sold at a discount, while those closer to the line have little to no markdown. We also focused the axes on items priced under $500 to keep the plot readable and to avoid extreme outliers skewing the visual.
+
+### Key Insights 
+Some product categories consistently offer deeper discounts, while others rarely deviate from the original price. This suggests that pricing strategies vary across categories, possibly based on demand, competition, or inventory levels.
+
+
 
 ## Repo Structure
-
-Use this section to explain the structure of your repo. This should help visitors quickly figure out where they should look to find certain elements. Further, you can use this space to highlight and briefly explain important/key files in the repo.
+- Data Files: Includes the original dataset in both CSV and Excel formats, sourced from Kaggle
+- Data Wrangling & Analysis: Contains R scripts used to clean the data, generate summaries, and create visualizations. These scripts handle tasks like converting currency, formatting columns, building tables, and plotting trends
+- Report Files: The core analysis and narrative are documented in a Quarto file, which is also rendered as a PDF for easy sharing and review
+- Documentation & Citatiions: Supporting files like the project guidelines, citation style files (APA/MLA), and this README help guide users and ensure proper referencing.
 
 ## Data Sources and Acknowledgements
 
-Be sure to list where you got any data used within the project. Be sure to acknowledge any one whose work or elements you're drawing upon.
+- The dataset is from Kaggle: "Amazon Sales Dataset"
+- Author: Karkavel Raja 
+- All analysis and visualization were completed using R and RStudio
 
 ## Authors
-
-Give information about who are the authors of the project and how people can get in touch if they have questions.
+- Soren Epple - sce5193@psu.edu
+- Lucas Sadoulet - lls5617@psu.e
+- Tjoet Lakmana - tal5618@psu.edu 
