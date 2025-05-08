@@ -149,8 +149,7 @@ library(knitr)
 library(kableExtra)
 library(ggplot2)
 
-data <- read.csv("C:/Users/Soren/Downloads/amazon.csv")
-
+data <- read.csv("amazon.csv")
 
 View(data)
 df_unique <- data %>%
@@ -181,6 +180,7 @@ View(df_tidy)
 # FAIR Principles
 
 The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
+
 
 ### Findable
 
@@ -223,6 +223,7 @@ This dataset is shared in a way that encourages others to use it. Because it’s
 The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here.
 
 # Data Visualizations
+
 
 ```{r}
 #| label: tbl-summary
@@ -313,6 +314,7 @@ ggplot(df_tidy, aes(x = actual_price_USD, y = discounted_price_USD, color = main
 
 ## Report
 
+
 The scatter plot @fig-scattor-plot visualizes the relationship between a product's actual price and its discounted price across different categories. Each point represents a product, colored by the main category, and the dashed line (where actual = discounted) acts as a reference for no discount.
 
 #### Key Observations:
@@ -356,6 +358,7 @@ df_tidy %>%
   ) +
   theme_minimal() +
   theme(legend.position = "none")  # Remove legend for cleaner look since bars are labeled
+
 
 ```
 
