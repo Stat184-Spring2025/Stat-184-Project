@@ -1,7 +1,7 @@
 ---
 title: "Amazon India Sales Analysis"
 author: "Soren Epple, Lucas Sadoulet, Tjoet Lakmana"
-date: "2025-05-01"
+date: "2025-05-08"
 format:
   pdf:
     toc: false
