@@ -1,7 +1,7 @@
-df_summary <- df_tidy %>%
+df_summary <- df_tidy %>% #uses prior code through cleaning.r
   mutate(
     rating = as.numeric(rating),
-    main_category = sapply(strsplit(category, '\\|'), `[`, 1)  # fixed typo here
+    main_category = sapply(strsplit(category, '\\|'), `[`, 1)  # uses the main_category rather than the sub categories
   ) %>%
   group_by(main_category) %>%
   summarise(
