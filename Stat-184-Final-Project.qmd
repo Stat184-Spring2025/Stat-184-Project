@@ -408,12 +408,13 @@ ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   ) +
   theme_minimal()
 
-# Note: Outlier users with ~600 and ~50 items offsetting all data points, removed for ease of understanding 
+# Step 3: Remove Outliers, users with ~600 and ~50 items offsetting all data points, removed for ease of understanding 
 df_individuals <- df_individuals %>%
   filter(item_count != max(item_count))
 df_individuals <- df_individuals %>%
   filter(item_count != max(item_count))
 
+# Step 4: Replot the items with out the outliers
 ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   geom_point(aes(size = total_spending, color = total_spending)) +
   labs(
