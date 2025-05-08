@@ -12,7 +12,7 @@ This scatter plot compares the original price of each product (on the x-axis) wi
 
 Products that appear below this line are being sold at a discount, while those closer to the line have little to no markdown. We also focused the axes on items priced under $500 to keep the plot readable and to avoid extreme outliers skewing the visual.
 
-## Key Insights 
+### Key Insights 
 Some product categories consistently offer deeper discounts, while others rarely deviate from the original price. This suggests that pricing strategies vary across categories, possibly based on demand, competition, or inventory levels.
 
 
@@ -30,6 +30,6 @@ Some product categories consistently offer deeper discounts, while others rarely
 - All analysis and visualization were completed using R and RStudio
 
 ## Authors
-Soren Epple - sce5193@psu.edu
-Lucas Sadoulet - lls5617@psu.e
-Tjoet Lakmana - tal5618@psu.edu 
+- Soren Epple - sce5193@psu.edu
+- Lucas Sadoulet - lls5617@psu.e
+- Tjoet Lakmana - tal5618@psu.edu 
