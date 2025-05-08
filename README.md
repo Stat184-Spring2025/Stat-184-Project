@@ -30,6 +30,6 @@ Some product categories consistently offer deeper discounts, while others rarely
 - All analysis and visualization were completed using R and RStudio
 
 ## Authors
-- Soren Epple - sce5193@psu.edu
-- Lucas Sadoulet - lls5617@psu.e
-- Tjoet Lakmana - tal5618@psu.edu 
+- Soren Epple    - sce5193@psu.edu
+- Lucas Sadoulet - lls5617@psu.edu
+- Tjoet Lakmana  - tal5618@psu.edu 
