@@ -1,7 +1,7 @@
 ---
 title: "Amazon India Sales Analysis"
 author: "Soren Epple, Lucas Sadoulet, Tjoet Lakmana"
-date: "2025-05-07"
+date: "2025-05-01"
 format:
   pdf:
     toc: false
@@ -31,6 +31,10 @@ Here are the main questions we set out to explore:
 -   What products tend to have a higher rating with respect to their main category?
 
     This helps us understand which products are actively being bought and reviewed. It can also be helpful to make interpretations with respect to review count, and how depending on the number can affect the confidence in the product rating. High volumes in review count generally show a higher confidence in the rating, whereas, lower volumes have a lesser amount of confidence.
+    
+-   Is review count a reliable datapoint?
+
+-   How can we use average ratings to make interpretations off other variables?
 
 **Tjoet's Exploratory Questions?**
 
@@ -163,7 +167,8 @@ For this project, we are looking to conduct exploratory analysis, since while lo
 
 This structure allows us to analyze product pricing, discount trends, rating patterns, and customer engagement at both the product and category levels. By simplifying and standardizing the dataset, we made it easier to create visualizations, perform summaries, and answer the key questions guiding our analysis.
 
-###PCIP:
+### PCIP:
+
 We wanted to change the currency, simple text replacement and rupee to usd conversion. We wanted to remove duplicate data and ensure the data was clean. Priorities necessary columns and removing excess columns such as image links and image files.
 ```{r}
 #| label: Data-Cleaning
@@ -237,6 +242,7 @@ The CARE Principles are all about making sure data involving communities is hand
 # Data Visualizations
 
 ### PCIP
+
 We wanted to ensure that each subcategory was counted towards the main category. By doing this, we wanted to include everything before the first occurence of "|", which signified the main category. Including the average rating towards that cateogory along with the acculumated amount of reviews towards the specified main category was necessary.
 ```{r}
 #| label: tbl-summary
@@ -297,6 +303,9 @@ With the following data visualizations provided above via @tbl-summary and @fig-
 **Final Interpretation:**
 
 Categories receiving relatively high average ratings should be interpreted alongside the number of reviews. A product with a high rating and low volume of reviews may be less reliable than a slightly lower rating with a greater volume in reviews. The display of these two visualizations help identify which categories are highly rated, more specifically which ratings are statistically more robust. *Electronics* and *Home & Kitchen* remain at a high volume and consistent with their high ratings.
+
+### PCIP
+
 
 ```{r}
 #| label: fig-scattor-plot
@@ -394,8 +403,12 @@ This visualization highlights how pricing strategies vary across product categor
 
 # Product Bought and Spending by User
 
-To clearly visualize how users spending habits can be generalized, using the amount of items and the average cost of items they bought, we created a dot plot to measure these two related details in how they are corrilated by user.
+To clearly visualize how users spending habits can be generalized, using the amount of items and the average cost of items they bought, we created a dot plot to measure these two related details in how they are correlated by user.
+
 ### PCIP
+
+To create the Actual Price vs Discounted Price scatter plot, I first planned the goal of the visualization: to show how much products are discounted across categories and whether certain categories consistently offer larger discounts. Then I coded the plot by cleaning the data, creating a simplified main category variable, and using ggplot() to map actual price against discounted price, adding a dashed line to represent no discount. After generating the initial plot, I polished it by setting axis limits, adjusting the colors, and rotating the labels to make it easier to read. 
+
 For this code section I’ll need to create a new table for individuals users. To do this I split the users list by commas and the group these rows by their names. This grouping would include key detail including the total amount spend and the number of items bought. Then creating a table which merges these two concepts, probably a dot plot in 2D.
 ```{r}
 #| label: fig-user-spending
@@ -422,16 +435,11 @@ ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   labs(
     title = "Average Cost per Item vs. Number of Items Bought",
     x = "Number of Items Bought",
-    y = "Average Cost per Item (USD)",
+    y = "Average Cost per Item",
     color = "Total Spending",
     size = "Total Spending"
   ) +
   theme_minimal()
-```
-```{r}
-#| label: fig-user-spending-outliers-removed
-#| fig-cap: "Total Spending and Number of Items Bought by Users ( Outlier Removed )"
-#| fig-pos: H
 
 # Step 3: Remove Outliers, users with ~600 and ~50 items offsetting all data points, removed for ease of understanding 
 df_individuals <- df_individuals %>%
@@ -443,9 +451,9 @@ df_individuals <- df_individuals %>%
 ggplot(df_individuals, aes(x = item_count, y = average_price)) +
   geom_point(aes(size = total_spending, color = total_spending)) +
   labs(
-    title = "Average Cost per Item vs. Number of Items Bought ( Outlier Removed )",
+    title = "Average Cost per Item vs. Number of Items Bought",
     x = "Number of Items Bought",
-    y = "Average Cost per Item (USD)",
+    y = "Average Cost per Item",
     color = "Total Spending",
     size = "Total Spending"
   ) +
@@ -467,7 +475,7 @@ ggplot(df_individuals, aes(x = item_count, y = average_price)) +
 
 ## Final Interpretation
 
-This visualization highlights how spending behavior varies significantly across individual users. As shown in @fig-user-spending, there is a clear inverse relationship between the number of items purchased and the average cost per item, forming a curved distribution. This suggests two dominant strategies: some users concentrate their spending on a few high-cost items, while others buy many low-cost purchases. Despite these differing approaches, overall spending levels among high-value users remain surprisingly consistent. Some account with exceptionally high rating counts offset a lot of the data as outliers, rating 100's of more items that the next highest reviewer. We suspect that these are bots engaging in mass purchasing to boost product rankings, since these are accounts which comment a lot, not indicative of companies. This is very surprising that we caught this in our findings, and shows utiliy for these graphs that we hadn't intended. More generally, these findings suggest that high spending is not necessarily tied to a single consumer behavior but may reflect a broader mix of user types and purchasing goals within the platform.
+This visualization highlights how spending behavior varies significantly across individual users. As shown in @fig-user-spending, there is a clear inverse relationship between the number of items purchased and the average cost per item, forming a curved distribution. This suggests two dominant strategies: some users concentrate their spending on a few high-cost items, while others buy many low-cost purchases. Despite these differing approaches, overall spending levels among high-value users remain surprisingly consistent. Some account with exceptionally high rating counts offset a lot of the data as outliers, rating 100's of more items that the next highest reviewer. We suspect that these are bots engaging in mass purchasing to boost product rankings, since these are accounts which comment a lot, not indicative of companies. This is very surprising that we caught this in our findings, and shows utility for these graphs that we hadn't intended. More generally, these findings suggest that high spending is not necessarily tied to a single consumer behavior but may reflect a broader mix of user types and purchasing goals within the platform.
 
 # **Code Appendix**
 
