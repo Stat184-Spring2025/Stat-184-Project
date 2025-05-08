@@ -30,18 +30,18 @@ execute:
 The dataset we used for this project aligns with what are known as the FAIR Principles. These principles help guide how data should be handled to make it more usable and shareable across different settings.
 
 ### Findable
-You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform.
+You can find this dataset easily on Kaggle, which is a popular platform for sharing and discovering datasets. However, this specific dataset does not come with detailed metadata or column explanations, so some interpretation and exploration are needed to fully understand its structure. Still, it is clearly labeled and easy to locate on the platform. 
 
 ### Accessible
-Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily.
+Getting access to this data is straightforward. There are no paywalls or complicated steps, you just need a free Kaggle account. That means anyone interested in exploring the dataset, whether for school or personal projects, can do so easily. Additionally, to ensure our data was accessible, we used qmd files to present the data in a more meaningful way, added comments to have our code be readable, and have our images contained alt text to assist those with screen readers to also have access to our work.
 
 ### Interoperable
-The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using.
+The data is in CSV format, which is a standard that works with all sorts of tools like R, Python, Excel, and more. This makes it convenient to load into whatever program you're most comfortable using. 
 
 ### Reusable
-This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research.
+This dataset is shared in a way that encourages others to use it. Because it’s clearly structured and documented, it’s great for reuse in class projects, personal analysis, or even more advanced research. Additionally, we included the dataset we used and programmed using fairly standard methods and import, these scripts should be easier to alter and reuse. 
 
 ## CARE Principles
-The CARE Principles are all about making sure data involving Indigenous communities is handled ethically and respectfully. In this case, the dataset doesn’t include any cultural or community-specific information, so the CARE guidelines don’t really apply here. 
+The CARE Principles are all about making sure data involving communities is handled ethically and respectfully. While we arent able to alter the public dataset, we can apply this to our project, to ensure that our data retained some privacy and remained ethical to the community and subject of the data. We ensured that conclusions derived from this dataset would not harm individuals or communities to the best of our knowledge, instead becoming a possible useful tool for the public and researchers alike. By removing the names of individuals and products from our dataset we are able to secure anonymity for these people and companies. We also recognize due to the open source nature of the code and us not being responsible for publishing of the dataset itself, this malicious data could be generated again. 
 
 
